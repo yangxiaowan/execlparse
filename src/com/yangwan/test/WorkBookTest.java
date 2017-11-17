@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.yangwan.bean.PersonWorkTimeInfo;
 import com.yangwan.util.ExcelUtil;
+import com.yangwan.util.WriteTable;
 
 import common.Logger;
 import jxl.Cell;
@@ -27,26 +28,6 @@ public class WorkBookTest {
 	}
 	
 	@Test
-	public void testWorkBook(){
-		String filePath = "C:\\test.xls";
-		Workbook  readWb = null;
-		try{
-			readWb = ExcelUtil.getReadWorkBook(filePath);
-		}catch(Exception e){
-			logger.info("create readWorkBook error!!!!");
-			e.printStackTrace();
-		}
-		Sheet readsheet = readWb.getSheet(0);
-		logger.info("table total columns :" + readsheet.getColumns());
-		logger.info("table total rows :" + readsheet.getRows());
-		for(int i = 0; i < readsheet.getRows(); i++){
-			for(int j = 0; j < readsheet.getColumns(); j++){
-				Cell cell = readsheet.getCell(j, i);   
-			}
-		}
-	}
-	
-	@Test
 	public void runParse(){
 		String filePath = "C:\\test.xls";
 		Workbook  readWb = null;
@@ -58,11 +39,12 @@ public class WorkBookTest {
 		}
 		Sheet readsheet = readWb.getSheet(0);
 		ExcelUtil excelUtil = new ExcelUtil();
+		WriteTable writeTable = new WriteTable();
 		List<PersonWorkTimeInfo> personList = excelUtil.parseWorkBook(readsheet);
-		for(PersonWorkTimeInfo pwt : personList){
-			pwt.printWorkTime();
+		writeTable.createSaveDir("C:\\testxsl");
+		for(PersonWorkTimeInfo temp : personList){
+			writeTable.writePersonWorktimeTable(temp);
 		}
-		
 	}
 	
 	

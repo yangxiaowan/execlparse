@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.yangwan.bean.PersonWorkTimeInfo;
+import com.yangwan.bean.WorkOnOffTime;
 
 import jxl.Cell;
 import jxl.Sheet;
@@ -98,7 +99,7 @@ public class ExcelUtil {
 	 * @param workTime
 	 * @return
 	 */
-	public boolean isWorkTime(String workTime){
+	public static boolean isWorkTime(String workTime){
 		if(workTime == null){
 			workTime = "";
 		}
@@ -108,7 +109,8 @@ public class ExcelUtil {
 		return pattern.matcher(splits[0]).find();
 	}
 	
-	public String getOnOffTime(int index, int day, Sheet readsheet){
+	public WorkOnOffTime getOnOffTime(int index, int day, Sheet readsheet){
+		WorkOnOffTime workOnOffTime = new WorkOnOffTime();
 		String dayNum = readsheet.getCell(day, index).getContents();
 		if(Integer.parseInt(dayNum) == day){
 			List<String> workTimeList = new ArrayList<String>();
@@ -170,10 +172,13 @@ public class ExcelUtil {
 				startTime = "";
 				endTime = "";
 			}
-			return startTime + "," + endTime;
+			workOnOffTime.setOnTime(startTime);
+			workOnOffTime.setOffTime(endTime);
+			workOnOffTime.setDay(day);
+			return workOnOffTime;
 		}else{
 			System.out.println("解析出勤天数异常！ dayNum :" + dayNum);
-			return "";
+			return null;
 		}
 	}
 	
@@ -207,45 +212,13 @@ public class ExcelUtil {
 					case DEPARTMENT_CLASS:
 						j += 1;
 						personWorkTimeInfo.setDepartment(getCellContent(j, i, readsheet)); //获取员工部门
-						i += 1; 
-						j = 1; //跳转至出勤天数行
-						personWorkTimeInfo.setOnOffTime1(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime2(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime3(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime4(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime5(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime6(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime7(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime8(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime9(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime10(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime11(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime12(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime13(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime14(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime15(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime16(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime17(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime18(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime19(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime20(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime21(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime22(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime23(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime24(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime25(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime26(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime27(getOnOffTime(i, j++, readsheet));
-						personWorkTimeInfo.setOnOffTime28(getOnOffTime(i, j++, readsheet));
-						if(j <= readsheet.getColumns() - 1){
-							personWorkTimeInfo.setOnOffTime29(getOnOffTime(i, j++, readsheet));
+						i += 1;  //跳转至出勤天数行
+						List<WorkOnOffTime> list = new ArrayList<WorkOnOffTime>();
+						for(j = 1; j < readsheet.getColumns(); j++){
+							WorkOnOffTime tempWk = getOnOffTime(i, j, readsheet);
+							list.add(tempWk);
 						}
-						if(j <= readsheet.getColumns() - 1){
-							personWorkTimeInfo.setOnOffTime30(getOnOffTime(i, j++, readsheet));
-						}
-						if(j <= readsheet.getColumns() - 1){
-							personWorkTimeInfo.setOnOffTime31(getOnOffTime(i, j++, readsheet));
-						}
+						personWorkTimeInfo.setWorkOnOffTimeList(list);
 						personList.add(personWorkTimeInfo);
 						i += 1; 
 						break;

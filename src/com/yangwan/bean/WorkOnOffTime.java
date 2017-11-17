@@ -2,17 +2,22 @@ package com.yangwan.bean;
 
 public class WorkOnOffTime {
 
-	public String day;
+	public int day;
 	
 	public String onTime;
 	
 	public String offTime;
 
-	public String getDay() {
+	/**
+	 * º”∞‡ ±≥§
+	 */
+	public double overtime;
+	
+	public int getDay() {
 		return day;
 	}
 
-	public void setDay(String day) {
+	public void setDay(int day) {
 		this.day = day;
 	}
 
@@ -31,5 +36,14 @@ public class WorkOnOffTime {
 	public void setOffTime(String offTime) {
 		this.offTime = offTime;
 	}
+
+	public double getOvertime() {
+		return overtime;
+	}
+
+	public void setOvertime(double overtime) {
+		this.overtime = overtime;
+	}
+	
 	
 }
